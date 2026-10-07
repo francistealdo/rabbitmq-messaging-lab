@@ -14,11 +14,13 @@ async function main() {
     durable: true,
   });
 
-  channel.prefetch(5);
+  await channel.prefetch(5);
 
-  channel.consume(
+  await channel.consume(
     "01-basic-queue",
     (data) => {
+      if (!data) return;
+
       console.log(data.content.toString());
 
       setTimeout(() => {
