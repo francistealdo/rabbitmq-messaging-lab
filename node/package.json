@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "basic:producer": "node --env-file=../.env examples/01-basic-queue/producer.mjs",
-    "basic:consumer": "node --env-file=../.env examples/01-basic-queue/consumer.mjs"
+    "basic:consumer": "node --env-file=../.env examples/01-basic-queue/consumer.mjs",
+    "direct:producer": "node --env-file=../.env examples/02-direct-exchange/producer.mjs"
   },
   "keywords": [],
   "author": "",
