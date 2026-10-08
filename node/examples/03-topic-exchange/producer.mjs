@@ -16,9 +16,9 @@ async function main() {
   await channel.assertQueue("system-logs");
   await channel.assertQueue("system-errors");
 
-  // Bind the system logs queue to the topic exchange with a routing key pattern logging all messages that start with "logs."
+  // Receives any routing key starting with "logs."
   await channel.bindQueue("system-logs", "topic-exchange", "logs.#");
-  // Bind the system errors queue to the topic exchange with a routing key pattern logging all messages that end with ".error"
+  // Receives any routing key ending with ".error"
   await channel.bindQueue("system-errors", "topic-exchange", "#.error");
 
   // Publish messages to the topic exchange with different routing keys

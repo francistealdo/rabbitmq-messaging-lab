@@ -8,12 +8,65 @@ A hands-on repository for exploring RabbitMQ messaging concepts using Node.js, D
 
 Basic producer/consumer example demonstrating:
 
-- Durable queues
+- Durable queue
 - `publish()`
 - `sendToQueue()`
 - Manual acknowledgements
 - Consumer prefetch
 - RabbitMQ running with Docker Compose
+
+### 02 - Direct Exchange
+
+Demonstrates message routing with a direct exchange using exact routing keys.
+
+The example creates two queues:
+
+- `direct-exchange-queue-01`
+- `direct-exchange-queue-02`
+
+Both queues are bound to:
+
+```text
+bind-key-for-queues
+```
+
+Only the first queue is also bound to:
+
+```text
+bind-key-only-for-queue-01
+```
+
+This demonstrates how a direct exchange routes messages only to queues whose binding key exactly matches the message routing key.
+
+### 03 - Topic Exchange
+
+Demonstrates routing messages using topic patterns and wildcards.
+
+The example creates two queues:
+
+- `system-logs`
+- `system-errors`
+
+Bindings:
+
+```text
+system-logs   -> logs.#
+system-errors -> #.error
+```
+
+Examples:
+
+```text
+logs.system.info
+```
+
+is routed to `system-logs`.
+
+```text
+logs.system.error
+```
+
+matches both patterns and is routed to both queues.
 
 ## Project Structure
 
@@ -28,9 +81,13 @@ rabbitmq-messaging-lab/
     ├── package.json
     ├── package-lock.json
     └── examples/
-        └── 01-basic-queue/
-            ├── producer.mjs
-            └── consumer.mjs
+        ├── 01-basic-queue/
+        │   ├── producer.mjs
+        │   └── consumer.mjs
+        ├── 02-direct-exchange/
+        │   └── producer.mjs
+        └── 03-topic-exchange/
+            └── producer.mjs
 ```
 
 ## Requirements
@@ -82,6 +139,8 @@ cd node
 npm install
 ```
 
+### Basic Queue
+
 Run the consumer:
 
 ```bash
@@ -94,67 +153,21 @@ Run the producer in another terminal:
 npm run basic:producer
 ```
 
-The producer sends messages to the `01-basic-queue` queue.
+### Direct Exchange
 
-The consumer reads messages from the queue, waits a few seconds to simulate processing, and then manually acknowledges them.
+Run:
 
-## Concepts Demonstrated
-
-### Durable Queue
-
-The queue is declared with:
-
-```js
-await channel.assertQueue("01-basic-queue", {
-  durable: true,
-});
+```bash
+npm run direct:producer
 ```
 
-This allows the queue definition to survive a RabbitMQ restart.
+### Topic Exchange
 
-### Manual Acknowledgements
+Run:
 
-The consumer uses:
-
-```js
-{
-  noAck: false;
-}
+```bash
+npm run topic:producer
 ```
-
-and acknowledges processed messages with:
-
-```js
-channel.ack(data);
-```
-
-This prevents RabbitMQ from considering the message successfully processed before the consumer explicitly confirms it.
-
-### Prefetch
-
-The consumer uses:
-
-```js
-await channel.prefetch(5);
-```
-
-This limits the number of unacknowledged messages delivered to the consumer at the same time.
-
-## Planned Examples
-
-Future examples may include:
-
-- Work queues
-- Direct exchanges
-- Fanout exchanges
-- Topic exchanges
-- Message TTL
-- Priority queues
-- Dead-letter queues
-- Retry strategies
-- Publisher confirms
-- .NET producers and consumers
-- Event-driven sample applications
 
 ## Purpose
 

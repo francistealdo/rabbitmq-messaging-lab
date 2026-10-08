@@ -1,5 +1,5 @@
 {
-  "name": "node",
+  "name": "rabbitmq-messaging-lab-node",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -16,7 +16,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "@types/amqplib": "^0.10.8",
     "amqplib": "^2.2.0"
