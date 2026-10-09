@@ -12,7 +12,8 @@
     "basic:consumer": "node --env-file=../.env examples/01-basic-queue/consumer.mjs",
     "direct:producer": "node --env-file=../.env examples/02-direct-exchange/producer.mjs",
     "topic:producer": "node --env-file=../.env examples/03-topic-exchange/producer.mjs",
-    "fanout:producer": "node --env-file=../.env examples/04-fanout-exchange/producer.mjs"
+    "fanout:producer": "node --env-file=../.env examples/04-fanout-exchange/producer.mjs",
+    "headers:producer": "node --env-file=../.env examples/05-headers-exchange/producer.mjs"
   },
   "keywords": [],
   "author": "",
