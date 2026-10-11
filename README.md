@@ -68,11 +68,71 @@ logs.system.error
 
 matches both patterns and is routed to both queues.
 
+RabbitMQ topic wildcards:
+
+- `*` matches exactly one word
+- `#` matches zero or more words
+
+### 04 - Fanout Exchange
+
+Demonstrates broadcast-style messaging with a fanout exchange.
+
+A single published message is routed to all queues bound to the exchange:
+
+- `email-notifications`
+- `sms-notifications`
+- `push-notifications`
+
+Routing keys are ignored by fanout exchanges.
+
+### 05 - Headers Exchange
+
+Demonstrates routing messages based on message headers instead of routing keys.
+
+The example routes notifications using the `notification_type` header:
+
+```text
+notification_type=email -> email-notifications
+notification_type=sms   -> sms-notifications
+notification_type=push  -> push-notifications
+```
+
+### 06 - Exchange Bindings
+
+Demonstrates exchange-to-exchange bindings.
+
+The example combines:
+
+- A headers exchange
+- A fanout exchange
+- Multiple notification queues
+
+A message published to the headers exchange can be forwarded to the fanout exchange and then broadcast to all queues.
+
+### 07 - Priority Queue
+
+Demonstrates RabbitMQ message priorities.
+
+The queue is configured with:
+
+```js
+maxPriority: 5;
+```
+
+Messages can then be published with different priority levels:
+
+```js
+{
+  priority: 5;
+}
+```
+
+Higher-priority messages are delivered before lower-priority messages when they are waiting in the queue.
+
 ## Project Structure
 
 ```text
 rabbitmq-messaging-lab/
-├── .env
 ├── .env.example
 ├── .gitignore
 ├── README.md
@@ -86,7 +146,15 @@ rabbitmq-messaging-lab/
         │   └── consumer.mjs
         ├── 02-direct-exchange/
         │   └── producer.mjs
-        └── 03-topic-exchange/
+        ├── 03-topic-exchange/
+        │   └── producer.mjs
+        ├── 04-fanout-exchange/
+        │   └── producer.mjs
+        ├── 05-headers-exchange/
+        │   └── producer.mjs
+        ├── 06-binding-exchanges/
+        │   └── producer.mjs
+        └── 07-max-priority/
             └── producer.mjs
 ```
 
