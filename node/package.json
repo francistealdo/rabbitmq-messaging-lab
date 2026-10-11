@@ -14,7 +14,8 @@
     "topic:producer": "node --env-file=../.env examples/03-topic-exchange/producer.mjs",
     "fanout:producer": "node --env-file=../.env examples/04-fanout-exchange/producer.mjs",
     "headers:producer": "node --env-file=../.env examples/05-headers-exchange/producer.mjs",
-    "binding:producer": "node --env-file=../.env examples/06-binding-exchanges/producer.mjs"
+    "binding:producer": "node --env-file=../.env examples/06-binding-exchanges/producer.mjs",
+    "max-priority:producer": "node --env-file=../.env examples/07-max-priority/producer.mjs"
   },
   "keywords": [],
   "author": "",
