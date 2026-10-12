@@ -1,6 +1,6 @@
-export async function CertifyDocumentUseCase(file: Buffer): Promise<void> {
-  await randomDelay(500, 5000)
-  await randomException(5)
+export async function certifyDocument(file: Buffer): Promise<void> {
+  await randomDelay(500, 5000);
+  await randomException(5);
 }
 
 async function randomDelay(min: number = 1, max: number = 5000): Promise<void> {

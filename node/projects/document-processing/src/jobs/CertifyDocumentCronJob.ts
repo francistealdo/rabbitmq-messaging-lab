@@ -1,6 +1,6 @@
 import { CronJob } from "cron";
 import CertifyDocumentModel from "../models/CertifyDocumentModel.ts";
-import { CertifyDocumentUseCase } from "../usecases/CertifyDocumentUseCase.ts";
+import { certifyDocument } from "../usecases/CertifyDocumentUseCase.ts";
 
 class CertifyDocumentCronJob {
   private isCronRunning: boolean = false;
@@ -17,12 +17,14 @@ class CertifyDocumentCronJob {
         const certifyPendings = await CertifyDocumentModel.getPendings(10);
         for (const certify of certifyPendings) {
           try {
-            await CertifyDocumentUseCase(Buffer.from(certify.file, "base64"));
+            await certifyDocument(Buffer.from(certify.file, "base64"));
             await CertifyDocumentModel.setProcessed(certify.id);
             console.log(`Document ${certify.id} processed successfully.`);
           } catch (err: any) {
-            console.log(err.message);
-            await CertifyDocumentModel.setErrored(certify.id, err.message);
+            const message =
+              err instanceof Error ? err.message : "Unknown error";
+            console.log(message);
+            await CertifyDocumentModel.setErrored(certify.id, message);
           }
         }
 

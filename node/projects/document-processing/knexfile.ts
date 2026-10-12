@@ -1,16 +1,17 @@
 import type { Knex } from "knex";
+import { databaseConfig } from "./src/configs/database/DatabaseConfig.ts";
 
 const config: Knex.Config = {
-  client: "sqlite3",
+  client: databaseConfig.client,
   connection: {
-    filename: "./data/document-processing.db",
+    filename: databaseConfig.filename,
   },
   useNullAsDefault: true,
   migrations: {
-    directory: "./migrations",
+    directory: databaseConfig.migrationsDirectory,
   },
   seeds: {
-    directory: "./seeds",
+    directory: databaseConfig.seedsDirectory,
   },
 };
 

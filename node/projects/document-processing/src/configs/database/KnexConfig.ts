@@ -1,11 +1,10 @@
 import knex from "knex";
+import { databaseConfig } from "./DatabaseConfig.ts";
 
 const db = knex({
-  client: "sqlite3",
+  client: databaseConfig.client,
   connection: {
-    filename:
-      process.env.SQLITE_DB_PATH ??
-      "./projects/document-processing/data/document-processing.db",
+    filename: databaseConfig.filename,
   },
   useNullAsDefault: true,
 });
