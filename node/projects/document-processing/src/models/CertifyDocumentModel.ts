@@ -1,0 +1,39 @@
+import db from "../configs/database/KnexConfig.ts";
+import { CertifyDocumentsStatusEnum } from "../enums/CertifyDocumentsStatusEnum.ts";
+
+class CertifyDocumentModel {
+  async getPendings(limit: number = 1000): Promise<CertifyDocumentModel[]> {
+    return await db("certify_documents")
+      .where({
+        status: CertifyDocumentsStatusEnum.PENDING,
+      })
+      .limit(limit)
+      .select("*");
+  }
+
+  async setProcessed(documentId: string): Promise<void> {
+    await db("certify_documents").where("id", documentId).update({
+      status: CertifyDocumentsStatusEnum.PROCESSED,
+      updated_at: new Date(),
+    });
+  }
+
+  async setErrored(documentId: string, message: string): Promise<void> {
+    await db("certify_documents").where("id", documentId).update({
+      status: CertifyDocumentsStatusEnum.ERRORED,
+      message: message,
+      updated_at: new Date(),
+    });
+  }
+}
+
+export default new CertifyDocumentModel();
+
+interface CertifyDocumentModel {
+  id: string;
+  file: string;
+  status: number;
+  message: string;
+  created_at: Date;
+  updated_at: Date;
+}

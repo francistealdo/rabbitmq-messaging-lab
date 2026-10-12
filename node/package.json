@@ -1,5 +1,6 @@
 {
   "name": "rabbitmq-messaging-lab-node",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -15,13 +16,28 @@
     "fanout:producer": "node --env-file=../.env examples/04-fanout-exchange/producer.mjs",
     "headers:producer": "node --env-file=../.env examples/05-headers-exchange/producer.mjs",
     "binding:producer": "node --env-file=../.env examples/06-binding-exchanges/producer.mjs",
-    "max-priority:producer": "node --env-file=../.env examples/07-max-priority/producer.mjs"
+    "max-priority:producer": "node --env-file=../.env examples/07-max-priority/producer.mjs",
+    "document-processing:project": "tsx --env-file=../.env projects/document-processing/src/index.ts",
+    "document-processing:migrate": "knex --knexfile projects/document-processing/knexfile.ts migrate:latest",
+    "document-processing:rollback": "knex --knexfile projects/document-processing/knexfile.ts migrate:rollback",
+    "document-processing:seed": "knex --knexfile projects/document-processing/knexfile.ts seed:run"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/amqplib": "^0.10.8",
-    "amqplib": "^2.2.0"
+    "amqplib": "^2.2.0",
+    "cron": "^4.4.0",
+    "dotenv": "^18.0.7",
+    "knex": "^3.3.0",
+    "save-dev": "^0.0.1-security",
+    "sqlite3": "^6.0.1",
+    "ts-node-dev": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
   }
 }
