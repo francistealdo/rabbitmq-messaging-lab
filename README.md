@@ -1,53 +1,65 @@
 # RabbitMQ Messaging Lab
 
-A hands-on repository for exploring RabbitMQ messaging concepts using Node.js, Docker, and eventually .NET.
+A hands-on repository for learning and experimenting with RabbitMQ messaging patterns using Node.js, TypeScript, Docker, and eventually .NET.
 
-## Current Examples
+The repository is divided into two main areas:
 
-### 01 - Basic Queue
+- **Examples** — small, isolated RabbitMQ concepts.
+- **Projects** — more realistic applications that combine messaging, persistence, background processing, and other backend concepts.
+
+---
+
+## Technologies
+
+- RabbitMQ
+- Docker / Docker Compose
+- Node.js
+- TypeScript
+- amqplib
+- Knex.js
+- SQLite
+- Cron jobs
+
+---
+
+# RabbitMQ Examples
+
+## 01 - Basic Queue
 
 Basic producer/consumer example demonstrating:
 
-- Durable queue
+- Durable queues
 - `publish()`
 - `sendToQueue()`
 - Manual acknowledgements
 - Consumer prefetch
-- RabbitMQ running with Docker Compose
 
-### 02 - Direct Exchange
+## 02 - Direct Exchange
 
-Demonstrates message routing with a direct exchange using exact routing keys.
+Demonstrates routing messages using exact routing-key matches.
 
-The example creates two queues:
+Two queues are bound to the same exchange:
 
-- `direct-exchange-queue-01`
-- `direct-exchange-queue-02`
+```text
+direct-exchange-queue-01
+direct-exchange-queue-02
+```
 
-Both queues are bound to:
+Both receive messages using:
 
 ```text
 bind-key-for-queues
 ```
 
-Only the first queue is also bound to:
+Only queue 01 receives messages using:
 
 ```text
 bind-key-only-for-queue-01
 ```
 
-This demonstrates how a direct exchange routes messages only to queues whose binding key exactly matches the message routing key.
+## 03 - Topic Exchange
 
-### 03 - Topic Exchange
-
-Demonstrates routing messages using topic patterns and wildcards.
-
-The example creates two queues:
-
-- `system-logs`
-- `system-errors`
-
-Bindings:
+Demonstrates topic-based routing using RabbitMQ wildcards.
 
 ```text
 system-logs   -> logs.#
@@ -66,30 +78,30 @@ is routed to `system-logs`.
 logs.system.error
 ```
 
-matches both patterns and is routed to both queues.
+matches both bindings.
 
-RabbitMQ topic wildcards:
+Topic wildcards:
 
 - `*` matches exactly one word
 - `#` matches zero or more words
 
-### 04 - Fanout Exchange
+## 04 - Fanout Exchange
 
-Demonstrates broadcast-style messaging with a fanout exchange.
+Demonstrates broadcast messaging.
 
-A single published message is routed to all queues bound to the exchange:
+A single message published to the exchange is delivered to every bound queue:
 
-- `email-notifications`
-- `sms-notifications`
-- `push-notifications`
+```text
+email-notifications
+sms-notifications
+push-notifications
+```
 
 Routing keys are ignored by fanout exchanges.
 
-### 05 - Headers Exchange
+## 05 - Headers Exchange
 
-Demonstrates routing messages based on message headers instead of routing keys.
-
-The example routes notifications using the `notification_type` header:
+Demonstrates routing messages using headers instead of routing keys.
 
 ```text
 notification_type=email -> email-notifications
@@ -97,29 +109,29 @@ notification_type=sms   -> sms-notifications
 notification_type=push  -> push-notifications
 ```
 
-### 06 - Exchange Bindings
+## 06 - Exchange Bindings
 
 Demonstrates exchange-to-exchange bindings.
 
 The example combines:
 
-- A headers exchange
-- A fanout exchange
+- Headers exchange
+- Fanout exchange
 - Multiple notification queues
 
-A message published to the headers exchange can be forwarded to the fanout exchange and then broadcast to all queues.
+A message can be routed from one exchange to another before reaching its final queues.
 
-### 07 - Priority Queue
+## 07 - Priority Queue
 
-Demonstrates RabbitMQ message priorities.
+Demonstrates message prioritization.
 
-The queue is configured with:
+The queue supports priorities up to:
 
 ```js
 maxPriority: 5;
 ```
 
-Messages can then be published with different priority levels:
+Messages can then be published with:
 
 ```js
 {
@@ -127,9 +139,75 @@ Messages can then be published with different priority levels:
 }
 ```
 
-Higher-priority messages are delivered before lower-priority messages when they are waiting in the queue.
+Higher-priority messages are delivered first when multiple messages are waiting in the queue.
 
-## Project Structure
+---
+
+# Projects
+
+## Document Processing
+
+`node/projects/document-processing`
+
+A TypeScript background-processing application that simulates document certification.
+
+The project currently demonstrates:
+
+- Scheduled background jobs
+- Batch processing
+- SQLite persistence
+- Knex query builder
+- Database migrations
+- Database seeds
+- Processing status tracking
+- Simulated processing delays
+- Simulated processing failures
+- Protection against overlapping scheduled executions
+
+### Current Flow
+
+```text
+SQLite
+  |
+  | pending documents
+  v
+Scheduled Job
+  |
+  | loads batch
+  v
+Document Certification
+  |
+  +--> success -> PROCESSED
+  |
+  +--> failure -> ERRORED
+```
+
+The project is intended to evolve into an event-driven workflow using RabbitMQ.
+
+A future version may use:
+
+```text
+SQLite
+   |
+   v
+Publisher
+   |
+   v
+RabbitMQ
+   |
+   v
+Certification Consumer
+   |
+   +--> success
+   |
+   +--> retry
+   |
+   +--> dead-letter queue
+```
+
+---
+
+# Project Structure
 
 ```text
 rabbitmq-messaging-lab/
@@ -137,38 +215,50 @@ rabbitmq-messaging-lab/
 ├── .gitignore
 ├── README.md
 ├── docker-compose.yml
+│
 └── node/
     ├── package.json
     ├── package-lock.json
-    └── examples/
-        ├── 01-basic-queue/
-        │   ├── producer.mjs
-        │   └── consumer.mjs
-        ├── 02-direct-exchange/
-        │   └── producer.mjs
-        ├── 03-topic-exchange/
-        │   └── producer.mjs
-        ├── 04-fanout-exchange/
-        │   └── producer.mjs
-        ├── 05-headers-exchange/
-        │   └── producer.mjs
-        ├── 06-binding-exchanges/
-        │   └── producer.mjs
-        └── 07-max-priority/
-            └── producer.mjs
+    ├── tsconfig.json
+    │
+    ├── examples/
+    │   ├── 01-basic-queue/
+    │   ├── 02-direct-exchange/
+    │   ├── 03-topic-exchange/
+    │   ├── 04-fanout-exchange/
+    │   ├── 05-headers-exchange/
+    │   ├── 06-binding-exchanges/
+    │   └── 07-max-priority/
+    │
+    └── projects/
+        └── document-processing/
+            ├── knexfile.ts
+            ├── migrations/
+            ├── seeds/
+            ├── data/
+            └── src/
+                ├── configs/
+                │   └── database/
+                ├── enums/
+                ├── jobs/
+                ├── models/
+                ├── usecases/
+                └── index.ts
 ```
 
-## Requirements
+---
+
+# Requirements
 
 - Docker
 - Node.js
 - npm
 
-## Environment Variables
+---
+
+# Environment Variables
 
 Create a `.env` file in the repository root based on `.env.example`.
-
-Example:
 
 ```env
 RABBITMQ_DEFAULT_USER=rabbitmq
@@ -177,9 +267,11 @@ RABBITMQ_HOST=localhost
 RABBITMQ_PORT=5672
 ```
 
-The `.env` file should not be committed to source control.
+The `.env` file is ignored by Git.
 
-## Running RabbitMQ
+---
+
+# Running RabbitMQ
 
 From the repository root:
 
@@ -187,18 +279,22 @@ From the repository root:
 docker compose up -d
 ```
 
-RabbitMQ will be available on:
+RabbitMQ will be available at:
 
-- AMQP: `localhost:5672`
-- Management UI: `http://localhost:15672`
+```text
+AMQP:          localhost:5672
+Management UI: http://localhost:15672
+```
 
-To stop the container:
+Stop RabbitMQ:
 
 ```bash
 docker compose down
 ```
 
-## Running the Node.js Examples
+---
+
+# Running the Node.js Examples
 
 Install dependencies:
 
@@ -207,36 +303,106 @@ cd node
 npm install
 ```
 
-### Basic Queue
-
-Run the consumer:
+Basic queue consumer:
 
 ```bash
 npm run basic:consumer
 ```
 
-Run the producer in another terminal:
+Basic queue producer:
 
 ```bash
 npm run basic:producer
 ```
 
-### Direct Exchange
-
-Run:
+Direct exchange:
 
 ```bash
 npm run direct:producer
 ```
 
-### Topic Exchange
-
-Run:
+Topic exchange:
 
 ```bash
 npm run topic:producer
 ```
 
-## Purpose
+Fanout exchange:
 
-This repository is intended as a practical RabbitMQ learning lab, with small isolated examples that can later evolve into more realistic event-driven applications.
+```bash
+npm run fanout:producer
+```
+
+Headers exchange:
+
+```bash
+npm run headers:producer
+```
+
+Exchange binding:
+
+```bash
+npm run binding:producer
+```
+
+Priority queue:
+
+```bash
+npm run max-priority:producer
+```
+
+---
+
+# Document Processing Project
+
+From the `node` directory:
+
+## Create the database
+
+Run migrations:
+
+```bash
+npm run document-processing:migrate
+```
+
+The SQLite database is created locally and is not committed to Git.
+
+## Seed sample documents
+
+```bash
+npm run document-processing:seed
+```
+
+## Run the worker
+
+```bash
+npm run document-processing:project
+```
+
+## Roll back the migration
+
+```bash
+npm run document-processing:rollback
+```
+
+---
+
+# Planned Topics
+
+Future RabbitMQ examples and projects may include:
+
+- Message TTL
+- Dead-letter exchanges and queues
+- Retry strategies
+- Publisher confirms
+- Work queues
+- Idempotent consumers
+- Connection recovery
+- Event-driven document processing
+- .NET producers and consumers
+
+---
+
+# Purpose
+
+This repository is a practical messaging lab focused on understanding RabbitMQ concepts through small isolated examples and then applying those concepts to more realistic backend applications.
