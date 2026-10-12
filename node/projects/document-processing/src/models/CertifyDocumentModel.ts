@@ -11,6 +11,14 @@ class CertifyDocumentModel {
       .select("*");
   }
 
+  async getById(documentId: string): Promise<CertifyDocumentModel | undefined> {
+    return await db("certify_documents")
+      .where({
+        id: documentId,
+      })
+      .first();
+  }
+
   async setProcessed(documentId: string): Promise<void> {
     await db("certify_documents").where("id", documentId).update({
       status: CertifyDocumentsStatusEnum.PROCESSED,
@@ -22,6 +30,13 @@ class CertifyDocumentModel {
     await db("certify_documents").where("id", documentId).update({
       status: CertifyDocumentsStatusEnum.ERRORED,
       message: message,
+      updated_at: new Date(),
+    });
+  }
+
+  async setSendToQueue(documentId: string): Promise<void> {
+    await db("certify_documents").where("id", documentId).update({
+      status: CertifyDocumentsStatusEnum.SENT_TO_QUEUE,
       updated_at: new Date(),
     });
   }

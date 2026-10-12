@@ -17,7 +17,9 @@
     "headers:producer": "node --env-file=../.env examples/05-headers-exchange/producer.mjs",
     "binding:producer": "node --env-file=../.env examples/06-binding-exchanges/producer.mjs",
     "max-priority:producer": "node --env-file=../.env examples/07-max-priority/producer.mjs",
-    "document-processing:project": "tsx --env-file=../.env projects/document-processing/src/index.ts",
+    "document-processing:legacy": "tsx --env-file=../.env projects/document-processing/src/index.ts legacy",
+    "document-processing:producer": "tsx --env-file=../.env projects/document-processing/src/index.ts producer",
+    "document-processing:consumer": "tsx --env-file=../.env projects/document-processing/src/index.ts consumer",
     "document-processing:migrate": "knex --knexfile projects/document-processing/knexfile.ts migrate:latest",
     "document-processing:rollback": "knex --knexfile projects/document-processing/knexfile.ts migrate:rollback",
     "document-processing:seed": "knex --knexfile projects/document-processing/knexfile.ts seed:run"
