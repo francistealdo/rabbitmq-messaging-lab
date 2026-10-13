@@ -4,8 +4,8 @@ A hands-on repository for learning and experimenting with RabbitMQ messaging pat
 
 The repository is divided into two main areas:
 
-- **Examples** — small, isolated RabbitMQ concepts.
-- **Projects** — more realistic applications that combine messaging, persistence, background processing, and other backend concepts.
+- **Examples**: small, isolated RabbitMQ concepts.
+- **Projects**: more realistic applications that combine messaging, persistence, background processing, and other backend concepts.
 
 ---
 
@@ -184,28 +184,15 @@ Continuous Consumer
   +--> ERRORED
 ```
 
-The project is intended to evolve into an event-driven workflow using RabbitMQ.
+The project demonstrates an event-driven document processing workflow using RabbitMQ, with a scheduled producer and a continuous consumer.
 
-A future version may use:
+Future improvements may include:
 
-```text
-SQLite
-   |
-   v
-Publisher
-   |
-   v
-RabbitMQ
-   |
-   v
-Certification Consumer
-   |
-   +--> success
-   |
-   +--> retry
-   |
-   +--> dead-letter queue
-```
+- Retry policies
+- Dead-letter queues
+- Publisher confirms
+- Idempotent consumers
+- Connection recovery
 
 ---
 
@@ -240,7 +227,8 @@ rabbitmq-messaging-lab/
             ├── data/
             └── src/
                 ├── configs/
-                │   └── database/
+                │   ├── database/
+                │   └── rabbitmq/
                 ├── consumers/
                 ├── enums/
                 ├── jobs/
@@ -376,11 +364,21 @@ The SQLite database is created locally and is not committed to Git.
 npm run document-processing:seed
 ```
 
-## Run the worker
+## Run the producer
 
 ```bash
 npm run document-processing:producer
+```
+
+## Run the consumer
+
+```bash
 npm run document-processing:consumer
+```
+
+## Run the legacy flow
+
+```bash
 npm run document-processing:legacy
 ```
 
