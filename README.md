@@ -169,17 +169,19 @@ The project currently demonstrates:
 ```text
 SQLite
   |
-  | pending documents
+  | PENDING
   v
-Scheduled Job
+Producer Cron Job
   |
-  | loads batch
   v
-Document Certification
+RabbitMQ queue
   |
-  +--> success -> PROCESSED
+  v
+Continuous Consumer
   |
-  +--> failure -> ERRORED
+  +--> PROCESSED
+  |
+  +--> ERRORED
 ```
 
 The project is intended to evolve into an event-driven workflow using RabbitMQ.
@@ -239,6 +241,7 @@ rabbitmq-messaging-lab/
             └── src/
                 ├── configs/
                 │   └── database/
+                ├── consumers/
                 ├── enums/
                 ├── jobs/
                 ├── models/
@@ -376,7 +379,9 @@ npm run document-processing:seed
 ## Run the worker
 
 ```bash
-npm run document-processing:project
+npm run document-processing:producer
+npm run document-processing:consumer
+npm run document-processing:legacy
 ```
 
 ## Roll back the migration
