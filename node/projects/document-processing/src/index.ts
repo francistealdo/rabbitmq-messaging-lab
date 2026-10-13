@@ -1,6 +1,6 @@
 import CertifyDocumentCronJob from "./jobs/CertifyDocumentCronJob.ts";
 import CertifyDocumentProducerCronJob from "./jobs/CertifyDocumentProducerCronJob.ts";
-import CertifyDocumentConsumerCronJob from "./jobs/CertifyDocumentConsumerCronJob.ts";
+import CertifyDocumentConsumer from "./consumers/CertifyDocumentConsumer.ts";
 
 const mode = process.argv[2];
 
@@ -10,7 +10,7 @@ switch (mode) {
     break;
 
   case "consumer":
-    CertifyDocumentConsumerCronJob.start();
+    CertifyDocumentConsumer.start();
     break;
 
   case "legacy":
